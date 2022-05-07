@@ -3,17 +3,23 @@ import React, {useState} from 'react'
 import { db } from '../FirebaseConfig';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 
+var scena=6;
+var id= 10000;
+const [testo, setTesto]= useState("benvenuto nella sezione creazione personaggio di Avernum, attraverso la compilazione di questo libro Game, verrai indirizzato in uno de popoli presenti nell'ambientazione ");
+const [titolo, setTitolo]= useState ('inizio')
+const [stanza, setStanza]= useState(0);
+const [opzionea, setOpzionea]=useState('continua');
+const [opzioneb, setOpzioneb]=useState('');
+const [opzionec, setOpzionec]=useState('');
+const [opzioned, setOpzioned]=useState('');
+const [opzionee, setOpzionee]=useState('');
+const [result, setResult]=useState("");
+const [visibility, SetVisibility] = useState(false)
+const [finish, setFinish]= useState(false)
 
-var a=0;
-var pg=0;
-var b=0;
-var c=0;
-var d=0;
-var e=0;
-var scena=0;
-
-const risposta= async()=>{
+const algoritmoSmistante= async()=>{
  const corpo = [];
+ const pg = [];
  const sensi = [];
  const mente = [];
  const vuoto = [];
@@ -23,119 +29,79 @@ const risposta= async()=>{
  const mentequery = query (collection(db, "personaggi"), where("tribù", "==", "Priorato di Aletheia"));
  const vuotoquery = query (collection(db, "personaggi"), where("tribù", "==", "Popolo di Zao"));
  const formaquery = query (collection(db, "personaggi"), where("tribù", "==", "Volkron"));
+ const pgquery    = query (collection(db, "personaggi"), where("death", "==", "false"));
  const querySnapshotcorpo = await   getDocs(corpoquery);
- querySnapshotcorpo.forEach((docs)=>{corpo.push(docs.data().tribù);});
+       querySnapshotcorpo.forEach((docs)=>{corpo.push(docs.data().tribù);});
  const querySnapshotsensi = await   getDocs(sensiquery);
- querySnapshotsensi.forEach((docs)=>{sensi.push(docs.data().tribù);});
+       querySnapshotsensi.forEach((docs)=>{sensi.push(docs.data().tribù);});
  const querySnapshotmente = await   getDocs(mentequery);
- querySnapshotmente.forEach((docs)=>{mente.push(docs.data().tribù);});
+       querySnapshotmente.forEach((docs)=>{mente.push(docs.data().tribù);});
  const querySnapshotvuoto = await   getDocs(vuotoquery);
- querySnapshotvuoto.forEach((docs)=>{vuoto.push(docs.data().tribù);});
+       querySnapshotvuoto.forEach((docs)=>{vuoto.push(docs.data().tribù);});
  const querySnapshotforma = await   getDocs(formaquery);
- querySnapshotforma.forEach((docs)=>{forma.push(docs.data().tribù);});
+       querySnapshotforma.forEach((docs)=>{forma.push(docs.data().tribù);});
+ const querySnapshotpg = await getDocs(pgquery);
+       querySnapshotpg.forEach((docs)=>{pg.push(docs.data().nome);});
+       scena=scena-1;
+       SetVisibility(true);}
+
  
- pg=corpo.length+sensi.length+mente.length+vuoto.length+forma.length;
- }
-
-
 
 const Game = ({navigation})=> {
-   
-    const [testo, setTesto]= useState("benvenuto nella sezione creazione personaggio di Avernum, attraverso la compilazione di questo libro Game, verrai indirizzato in uno de popoli presenti nell'ambientazione ");
-    const [titolo, setTitolo]= useState ('inizio')
-    const [stanza, setStanza]= useState(0);
-    const [opzionea, setOpzionea]=useState('continua');
-    const [opzioneb, setOpzioneb]=useState('');
-    const [opzionec, setOpzionec]=useState('');
-    const [opzioned, setOpzioned]=useState('');
-    const [opzionee, setOpzionee]=useState('');
-    const [result, setResult]=useState("");
-    const [visibility, SetVisibility] = useState(false)
-    const [finish, setFinish]= useState(false)
     
     const risultato =()=>{
-      if(a>>b && a>>c && a>>d && a>>e){
-        setResult('');
-    navigation.navigate('dettaglio',result);}
-      
-    }
+      /*if(a>>b && a>>c && a>>d && a>>e){
+        setResult('');*/
+    navigation.navigate('dettaglio',result);};
 
     const rispostaA=()=>{
       if (visibility==false){scelta()}
+
       else{
-      a= a+stanza;
-      scelta();
-      console.log('la variabile a è==',a);
-     }}
+           var al = Math.pow(10,scena-2);
+               id = id + al;
+               scelta();}}
 
      const rispostaB=()=>{
-       b= b+stanza;
-       scelta();
-      console.log('la variabile b è==',b);
-     }
+           var al = Math.pow(10,scena-2);
+               al= al*2;
+               id= id+al;
+               scelta();}
     
      const rispostaC=()=>{
-      c= c+stanza;
-      scelta();
-     console.log('la variabile c è==',c);
-    }
+           var al = Math.pow(10,scena-2);
+               al= al*3;
+               id= id+al;
+               scelta();}
 
     const rispostaD=()=>{
-      d= d+stanza;
-      scelta();
-     console.log('la variabile d è==',d);
-    }
+          var al = Math.pow(10,scena-2);
+              al= al*4;
+              id= id+al;
+              scelta();}
 
     const rispostaE=()=>{
-      e= e+stanza;
-      scelta();
-     console.log('la variabile e è==',e);
-    }
+          var al = Math.pow(10,scena-2);
+              al= al*5;
+              id= id+al;
+              scelta();}
 
-   
-const scelta =()=>{
-   scena= scena+1;
-   setStanza(scena);
-   if(stanza==0){
-    risposta();
-    setTesto("Dopo alcuni secondi di buio, apri gli occhi, sei per terra con il voltonel fango, dinnansi a te una battaglia inperversa.ll fumo si dirada lentamente, lasciando l'acre odore nelle narici e il polmoni roventi, le urla e il clangore di battaglia risuonano intorno a te mettendo a dura prova i tuoi sensi, mentre l'abbacinate scoppio di formidabili energie esplodono spazzando l'orizzonte e squassando la terra stessa.Fiumi di lava sgorgano, tra i fili d’erba che via via si anneriscono consumati dal calore, che oramai senti sempre più presente sul tuo stanco volto…");
-    setOpzionea("ti senti indifeso, cerchi qualcosa che possa aiutarti");
-    setOpzioneb("devi schiarirti le idea, osservi con attenzione cosa c'è intorno a te");
-    setOpzionec("Forse c'è qualcun'altro, ti metti in cerca di qualche sopravvissuto")
-    setOpzioned("Devi trovare un rifugio sicuro, meglio trovare una posizione favorevole")
-    setOpzionee("qualcosa d'incredibile sta accadendo, ti dirigi verso l'origine del clangore")
-    setTitolo("")
-  }
+   const scelta = async()=>{
+
+      const domanda=[] ;
+      const domandaquery = query (collection(db, "Game_element"), where("id", "==", id));
+      const querySnapshotdomanda = await   getDocs(domandaquery);
+            querySnapshotdomanda.forEach((docs)=>{domanda.push(docs.data()); });
+            setTesto(domanda[0].descrizione);
+            setOpzionea(domanda[0].choice1);
+            setOpzioneb(domanda[0].choice2);
+            setOpzionec(domanda[0].choice3);
+            setOpzioned(domanda[0].choice4);
+            setOpzionee(domanda[0].choice5);
+            scena=scena-1;
+            if(visibility==false){algoritmoSmistante()}};
+            
   
-  if (stanza==1){
-    SetVisibility(true)
-    setTesto('pari le palle');
-    setOpzionea(a);
-    setOpzioneb(b);
-    setOpzionec(c)
-    setOpzioned(d);
-    setOpzionee(e)
-  }
-  if(stanza==2){
-    setTesto('capocchia');
-    setOpzionea(a);
-    setOpzioneb(b);
-    setOpzionec(c)
-    setOpzioned(d);
-    setOpzionee(e)
-  }
-  if(stanza==3){
-   setFinish(true);
-    setTesto('soluzione');
-    setOpzionea('risultato');
-    setOpzioneb('');
-    setOpzionec('')
-    setOpzioned('');
-    setOpzionee('')
-  }
-}
-
-
   return (
 
       <View style={styles.main}>
