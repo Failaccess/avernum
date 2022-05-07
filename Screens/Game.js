@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 import { db } from '../FirebaseConfig';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 
+
 var scena=6;
 var id= 10000;
 const [testo, setTesto]= useState("benvenuto nella sezione creazione personaggio di Avernum, attraverso la compilazione di questo libro Game, verrai indirizzato in uno de popoli presenti nell'ambientazione ");
