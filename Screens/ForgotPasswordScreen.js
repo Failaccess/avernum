@@ -1,66 +1,91 @@
 
 import { sendPasswordResetEmail} from 'firebase/auth'
 import React, {useState} from 'react'
-import { StyleSheet, Text, View , KeyboardAvoidingView, TextInput,TouchableOpacity, Image, ScrollView} from 'react-native'
+import { StyleSheet, Text, View , KeyboardAvoidingView, TextInput,TouchableOpacity, Image, ScrollView, Dimensions} from 'react-native'
 import {auth} from '../FirebaseConfig';
-
+import Moderr from '../componenti/Element/Modal_error';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+const Widthi = Dimensions.get('window').width
+const Heighti = Dimensions.get('window').height
 
 
 const ForgotPassword = ({navigation}) => {
 
-
-
 const [email, setEmail] = useState('')
-function navigate(){
-    navigation.navigate('Login');
-}
+const [value2, setValue2]=useState(false)
+const [value1, setValue1]=useState(true)
+const [Text1, setText]=useState('')
+
+function navigate(){navigation.navigate('Login');}
 
 const SubmitForgotPassword = () => {
-    if(email.includes('') || email.includes(undefined)){ alert("inserisci un email");}
+    console.log(email);
+    console.log(email.length);
+    if(email.length == 0 || email.includes(undefined)){ 
+        if(email.includes('')){ console.log("oilloc")}
+                                                        setText("inserisci l'indirizzo email di registrazione");
+                                                        setValue1(!value1);
+                                                        setValue2(!value2);}
     else {
-    sendPasswordResetEmail(auth, email);
-    alert("email inviata");
-      
-}}
+            sendPasswordResetEmail(auth, email)
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode ,errorMessage);
+                  });
+                
+            
+            setText("email inviata");
+            setValue1(!value1);
+            setValue2(!value2);}}
 
-
+            const close=()=>{
+                setValue1(!value1)
+                setValue2(!value2) }
 
     
     return (
         <KeyboardAvoidingView style={styles.mainView}>
+          
           <View style={styles.TopView} >
-          <TouchableOpacity
-          onPress={navigate}>
-          <Image source={require('../assets/image/logoGold.png')}/></TouchableOpacity>    
+          
+          <TouchableOpacity style={{flex:1, position:'absolute', top:Heighti*0.15, left:Widthi*0.38}} onPress={navigate}>
+          <Ionicons name={"arrow-back-outline"} size={24} color={"#ac830f"}></Ionicons>
+          </TouchableOpacity> 
+          <Image resizeMethod='auto' resizeMode='center' style={{width:Widthi*0.2, height:Heighti*0.2, justifyContent:'center', alignItems:'center', marginTop:Heighti*0.21}} source={require('../assets/image/logoGold.png')}/>
           </View>
           <ScrollView style={styles.BottomView}>
+              <View style={{flex:1, alignContent:'center', alignItems:'center',justifyContent:'center'}}>
+              <View style={{alignItems:'center', justifyContent:'center'}}>  
               <View style={styles.inputContainer}>
                 <TextInput
                 placeholder="Email"
                 placeholderTextColor={'#ac830f'}
-                //borderColor="#2e2d2a"
                 selectionColor={'#ac830f'} 
                 color='#ac830f'
-               value= {email}
+                value= {email}
                 onChangeText = {text => setEmail(text)}
-                style = {styles.input}/>
+                style = {styles.input}
+                autoCapitalize= {"none"}/>
 
                 <View style={styles.buttonContainer}>
-            <TouchableOpacity
-            onPress={SubmitForgotPassword}
-            style={[styles.button,styles.buttonOutline]}>
+            <TouchableOpacity onPress={SubmitForgotPassword} style={[styles.button,styles.buttonOutline]}>
                     <Text style={[styles.Testo2]}>Invia Email</Text>
-         </TouchableOpacity>
+             </TouchableOpacity>
                 </View>
+                </View>
+                </View>  
                 </View>
                 </ScrollView>
+                {value2? <Moderr item={Text1} value={value1} onChangeValue={(modal)=>close()}/> : <Text></Text>}
                 </KeyboardAvoidingView>)}
 
 export default ForgotPassword
 
 const styles = StyleSheet.create({
     mainView:{
-        marginTop: 40,
+        width:Widthi,
+        height:Heighti,
         flex:1,
         flexDirection:'column',
         justifyContent:'center',
@@ -68,60 +93,49 @@ const styles = StyleSheet.create({
     backgroundColor:'#1f1e1c'},
     
     TopView:{
-        width:'100%',
-        height:'30%',
+        width:Widthi,
+        height:Heighti*0.4,
         display:'flex',
         justifyContent:'center',
-    alignItems:'center',
-backgroundColor:'#1f1e1c'},
+        alignItems:'center',
+        backgroundColor:'#1f1e1c'},
     
     BottomView:{
-        width:'100%',
-        height:'70%',
+        width:Widthi,
+        height:Heighti*0.6,
+        alignContent:'center',
         backgroundColor:'#1f1e1c',
     },
-    inputContainer:{
-        width:'100%',
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center',
-        marginTop:20,
+    inputContainer:{    
+    width:Widthi*0.2,
+    display:'flex',
+    flex:1,
+    alignContent:'center',
     },
     
     input:{
        width:'100%',
         backgroundColor:'#242320',
         height:50,
-        marginTop: 20,
+        marginTop: 10,
         paddingLeft:5,
     },
     buttonContainer:{
-    
         justifyContent:'center',
         alignItems:'center',
-        marginTop:40,
+        marginTop:10,
     },
     button:{
-        backgroundColor:'#1f1e1c',
-        width:'100%',
-        padding: 1,
-        borderRadius:20,
-        alignItems:'center',},
-
-        button2:{
-            backgroundColor:'#1f1e1c',
-            width:'100%',
-            padding: 1,
-            alignItems:'center',
-        },
-        buttonOutline2:{
-            
-            marginTop: 5,
-            alignItems:'center'
-        },
-        Testo2:{
-            color:'#ac830f',
+        backgroundColor:'#ac830f',
+  width:Widthi*0.15,
+  padding: 1,
+  borderRadius:5,
+  alignItems:'center',
+borderWidth:1,
+borderColor:'#1f1e1c'},
+ Testo2:{
+            color:'#1f1e1c',
             fontSize:32,
-            fontWeight:'bold',
-        },
+            fontWeight:'bold'},
+
 })

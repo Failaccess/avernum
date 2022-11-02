@@ -11,14 +11,16 @@ import AppDrawer from "./Route/AppDrawer";
 
 
 const Stack= createNativeStackNavigator();
-
+const user= auth.currentUser
 function App() {
-
+  
   const [isLogged, setLogged] = useState(false);
+  
   
   onAuthStateChanged(auth, user=>{
 
-    if (user !=null){setLogged(true);} 
+    if (user !=null){
+      setLogged(true);} 
 
     else{ setLogged(false);}})
   

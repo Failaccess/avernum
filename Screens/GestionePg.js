@@ -1,40 +1,54 @@
-import { StyleSheet, Text, View, Image,  TouchableOpacity, FlatList, SafeAreaView,ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image,  TouchableOpacity, FlatList, SafeAreaView,ScrollView, Dimensions } from 'react-native'
 import React, {useState,} from 'react'
 import { db } from '../FirebaseConfig';
-import {collection, getDocs, query, where,onSnapshot} from 'firebase/firestore';
+import {collection, getDocs, query, where, onSnapshot} from 'firebase/firestore';
 import { auth } from "../FirebaseConfig";
+import { useFocusEffect } from '@react-navigation/native';
 
-
-
+const Widthi = Dimensions.get('window').width
+const Heighti = Dimensions.get('window').height
 
 
 
 export default function GestionePg({navigation}){
+  const user = auth.currentUser;
+  const[personaggi, setPersonaggio]= useState([]);
+  var ATribu='';
+  var AID=''
 
-const user = auth.currentUser;
-
-const [personaggi, setPersonaggio]= useState([]);
-
-
-const informazioni = query(collection(db,"personaggi"),where("user", "==", user.uid));
-const unsub = onSnapshot(informazioni,(a)=>{
-  getData();
-});
+  useFocusEffect (()=>{const q = query(collection(db,"personaggi"),where("user","==", user.uid));
+ const qi =onSnapshot(q,(querySnapshot4)=>{
+     kimera();
+     });})
+ 
 
 
-const getData= async()=>{
-
-  let pgn = [];
   
-  const querySnapshot = await getDocs(informazioni);
-  querySnapshot.forEach((docs)=>{pgn.push(docs.data());});
+  const kimera= async (navigate)=>{
 
- setPersonaggio([...pgn]);
-// console.log(personaggi);
-  };
+    const pgn = [];
+  const pg = [];
+  const informazioni1=query(collection(db,"personaggi"),where("user","==",user.uid), where("complete","==",false));
+  const querySnapshot3= await getDocs(informazioni1);
+        querySnapshot3.forEach((docs)=>{pg.push(docs.data());});
+     
+        if(pg[0] == undefined)  {
+                                  const informazioni = query(collection(db,"personaggi"),where("user", "==", user.uid));
+                                  const querySnapshot = await getDocs(informazioni);
+                                  querySnapshot.forEach((docs)=>{pgn.push(docs.data());});
+                                  setPersonaggio([...pgn]);}
 
+        else{
+              ATribu=pg[0].tribù;
+              AID=pg[0].key
+            
+              navigation.navigate('StanzaPG',{ATribu, AID});
+            }}
+          
 
-
+ 
+   
+ 
   return (
     <SafeAreaView style={styles.mainView}>
       
@@ -48,7 +62,7 @@ const getData= async()=>{
         <ScrollView>
           <TouchableOpacity
           onPress={()=>{navigation.navigate('dettaglio',{ item })}}
-          style={{ marginBottom:10, height:200, width:'97%', marginLeft:5 }}>
+          style={{ marginBottom:20, height:Heighti*0.2, width:Widthi*0.5, marginLeft:5 }}>
           <View style={{ flex:1, padding:10 }}>
           <View style={[StyleSheet.absoluteFillObject,{backgroundColor:'#1f1e1c' ,borderRadius:10, borderWidth:1, borderColor:'grey'}]}>
           <Text style={[styles.Nome]}>{item.nome}</Text>
@@ -79,7 +93,8 @@ const styles = StyleSheet.create({
   mainView:{
     
     flex:1,
-    
+    justifyContent:'center',
+    alignItems:'center',
     backgroundColor:'#1f1e1c',
 },
 
@@ -114,7 +129,7 @@ Death:{
   resizeMode:'contain',
   position:'absolute',
   bottom:55,
-  right:100,
+  right:Widthi*0.24,
   
 },
 bg:{
